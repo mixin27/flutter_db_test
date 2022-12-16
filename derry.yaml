@@ -1,0 +1,81 @@
+# import_sorter
+format:
+  - dart format lib .
+  - flutter pub run import_sorter:main
+  - flutter format lib
+
+# build_runner
+gen:once: flutter pub run build_runner build --delete-conflicting-outputs
+# Run whenever start working. It will generate Freezed classes
+gen:watch: flutter pub run build_runner watch --delete-conflicting-outputs
+
+gen:
+  - flutter pub get
+  - flutter packages pub run build_runner build
+
+gen:locale:
+  - flutter pub run easy_localization:generate -S assets/l10n -f keys -O lib/l10n -o locale_keys.g.dart
+
+gen:splash:dev:
+  - flutter pub run flutter_native_splash:create --flavor development
+
+gen:splash:stg:
+  - flutter pub run flutter_native_splash:create --flavor staging
+
+gen:splash:prod:
+  - flutter pub run flutter_native_splash:create --flavor production
+
+build:apk:dev:
+  - flutter clean
+  - flutter pub get
+  - flutter build apk --flavor development -t lib/main_development.dart
+
+build:aab:dev:
+  - flutter clean
+  - flutter pub get
+  - flutter build appbundle --flavor development -t lib/main_development.dart
+
+build:apk:stg:
+  - flutter clean
+  - flutter pub get
+  - flutter build apk --flavor staging -t lib/main_staging.dart
+
+build:aab:stg:
+  - flutter clean
+  - flutter pub get
+  - flutter build appbundle --flavor staging -t lib/main_staging.dart
+
+build:apk:prod:
+  - flutter clean
+  - flutter pub get
+  - flutter build apk --flavor production -t lib/main_production.dart
+
+build:aab:prod:
+  - flutter clean
+  - flutter pub get
+  - flutter build appbundle --flavor production -t lib/main_production.dart
+
+start:ios:
+  - xcrun simctl list
+  - open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/
+
+clean:
+  - flutter clean
+  - flutter pub get
+
+purge:
+  - pod deintegrate
+  #- rm Flutter/Flutter.podspec
+  - flutter clean
+  - flutter pub get
+  #- pod install
+  #- flutter run
+
+purge:all:
+  - pod deintegrate
+  - rm Flutter/Flutter.podspec
+  - flutter clean
+  - flutter pub cache repair
+  - flutter pub get
+  #- pod install
+  - flutter run
